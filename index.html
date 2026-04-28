@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapa simple con geolocalización</title>
-
+    <!-- Estilos de Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         body {
@@ -13,7 +13,7 @@
         }
         #mapa {
             width: 100%;
-            height: 80vh; 
+            height: 80vh; /* 80% de la pantalla */
         }
         #coordenadas {
             text-align: center;
@@ -24,36 +24,42 @@
     </style>
 </head>
 <body>
-    <h1 style="text-align: center;"> Tu ubicación actual</h1>
+    <h1 style="text-align: center;">Tu ubicación actual</h1>
     <div id="mapa"></div>
     <div id="coordenadas">Obteniendo ubicación...</div>
 
+    <!-- Librería de Leaflet -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
+        // Preguntamos al navegador por la ubicación
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 function (posicion) {
                     const lat = posicion.coords.latitude;
                     const lng = posicion.coords.longitude;
 
+                    // Creamos el mapa centrado en esas coordenadas
                     const mapa = L.map('mapa').setView([lat, lng], 16);
 
+                    // Añadimos los azulejos (tiles) de OpenStreetMap
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         attribution: '&copy; OpenStreetMap contributors'
                     }).addTo(mapa);
 
+                    // Colocamos un marcador
                     L.marker([lat, lng])
                         .addTo(mapa)
                         .bindPopup('¡Estás aquí!')
                         .openPopup();
 
+                    // Mostramos las coordenadas
                     document.getElementById('coordenadas').innerText =
                         '🌍 Latitud: ' + lat.toFixed(6) +
                         ' | Longitud: ' + lng.toFixed(6);
                 },
                 function (error) {
                     document.getElementById('coordenadas').innerText =
-                        'No se pudo obtener la ubicación: ' + error.message;
+                        '❌ No se pudo obtener la ubicación: ' + error.message;
                 }
             );
         } else {
